@@ -141,3 +141,8 @@ rankhospital <- function(state,outcome,num = "best") {
     ##Returning given rank hospital for given outcome
     return (ordered_data[num,2])
 }
+
+##TESTCASES
+rankhospital("NC","heart attack","worst")
+rankhospital("NC","heart attack",2)
+rankhospital("NC","heart attack","best")
