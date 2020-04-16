@@ -1,5 +1,6 @@
 complete <- function(directory,id = 1:332) {
     
+    ###     directory = "data/airquality dataset" 
     data <- data.frame()
     csvFiles <- list.files(directory,full.names = TRUE)
     for(i in id)

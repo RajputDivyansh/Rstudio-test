@@ -1,5 +1,8 @@
 pollutantmean <- function(directory,pollutant,id = 1:332){
     
+    ###     directory = "data/airquality dataset" 
+    
+    
     # data <- data.frame()
     # for(i in id)
     # {
