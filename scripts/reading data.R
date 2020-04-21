@@ -92,3 +92,22 @@ names(pg2)
 google = handle("http://google.com")
 pg1 <- GET(handle = google,path = "/")
 pg2 <- GET(handle = google,path = "search")
+
+
+
+
+
+##READING FROM API's
+
+myapp <- oauth_app("openstats@123",key = "HsQGthxWni8TEBBvirv8Nvycu",
+                   secret = "ZSYaagHiRjCBuAZmeDezeBUAMErpREp9XmBEd52m3vGQsGZ4IQ")
+sig <- sign_oauth1.0(myapp,token = "1252593782845046784-bJcRLYOccI73DwqS8CBLf51FIm2dWD",
+                     token_secret = "54b35wub1t3KYXZcN6iy9FAmw39V71buGstRnDqRANrj2")
+
+homeTL <- GET("https://api.twitter.com/1.1/statuses/home_timeline.json",sig)
+
+#converting the json object
+library(jsonlite)
+json1 = content(homeTL)
+json2 = fromJSON(toJSON(json1))
+json2[1,1:4]
