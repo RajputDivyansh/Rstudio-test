@@ -80,3 +80,35 @@ object.size(fakeData)
 
 #to change the unit of size
 print(object.size(fakeData),units = "Mb")
+
+
+
+#CREATING SEQUENCE
+
+s1 <- seq(1,10,by = 2); s1
+s2 <- seq(1,10,by = 3); s2
+x <- c(1,3,8,2,5); seq(along = x)
+
+#creating categorical variables
+data$zipGroups = cut(data$zipCode,breaks = quantile(data$zipCode))
+table(data$zipGroups)
+table(data$zipGroups,data$zipGroups)
+
+
+#Easier cutting
+library(Hmisc)
+data$zipGroups = cut2(data$zipCode,g=4)
+table(data$zipGroups)
+
+
+#creating factor variables
+data$zcf <- factor(data$zipCode)
+data$zcf[1:10]
+
+
+#levels of factor variable
+yesno <- sample(c("yes","no"),size = 10,replace = TRUE)
+yesnofac = factor(yesno,levels = c("yes","no"))
+relevel(yesnofac,ref = "yes")
+
+as.numeric(yesnofac)
