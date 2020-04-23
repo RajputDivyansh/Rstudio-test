@@ -112,3 +112,80 @@ yesnofac = factor(yesno,levels = c("yes","no"))
 relevel(yesnofac,ref = "yes")
 
 as.numeric(yesnofac)
+
+
+
+
+
+
+##RESHAPING DATA
+
+library(reshape2)
+head(mtcars)
+
+
+#melting data
+dup_mtcars <- mtcars
+dup_mtcars$carname <- rownames(mtcars)
+carMelt <- melt(dup_mtcars,id = c("carname","gear","cyl"),measure.vars = c("mpg","hp"))   #it is used to group the data according to measure.vars
+head(carMelt,4)
+
+
+
+#casting data frames  
+#1.it will dcast molten data e.g on left side cylinder and to the right it ill give the count of mpg and hp
+cylData <- dcast(carMelt,cyl ~ variable)    
+cylData
+
+###############OUTPUT###################
+#    cyl mpg hp
+# 1   4  11 11
+# 2   6   7  7
+# 3   8  14 14
+
+
+#2. it will dcast data e.g on left side gear and cylinder and to 
+    #the right it ill give the count of mpg and hp(with respect to gear+cyl)
+cylData <- dcast(carMelt,gear + cyl ~ variable)
+cylData                                     
+
+###############OUTPUT###################
+#     gear cyl mpg hp
+# 1    3   4   1  1
+# 2    3   6   2  2
+# 3    3   8  12 12
+# 4    4   4   8  8
+# 5    4   6   4  4
+# 6    5   4   2  2
+# 7    5   6   1  1
+# 8    5   8   2  2
+
+
+#3. it will give the mean value for hp and mpg for different type of cyl
+cylData <- dcast(carMelt,cyl ~ variable,mean)
+cylData
+
+
+
+
+#averaging data
+head(InsectSprays)
+
+tapply(InsectSprays$count,InsectSprays$spray,sum)
+
+
+insect_split <- split(InsectSprays$count,InsectSprays$spray)
+
+insect_count <- lapply(insect_split,sum)
+
+#converting to vector
+unlist(insect_count)
+#OR
+sapply(insect_split,sum)
+
+
+
+#pylr package
+ddply(InsectSprays,.(spray),summarise,sum=sum(count))
+
+ddply(InsectSprays,.(spray),summarise,sum = ave(count,FUN = sum))
