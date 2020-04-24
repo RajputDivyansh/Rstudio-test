@@ -189,3 +189,59 @@ sapply(insect_split,sum)
 ddply(InsectSprays,.(spray),summarise,sum=sum(count))
 
 ddply(InsectSprays,.(spray),summarise,sum = ave(count,FUN = sum))
+
+
+
+
+
+
+##MANAGING DATA FRAMES WITH dplyr
+fileUrl <- "https://github.com/DataScienceSpecialization/courses/blob/master/03_GettingData/dplyr/chicago.rds?raw=true"
+download.file(fileUrl,destfile = "./data/chicago airquality dataset/chicago.rds")
+chicago <- readRDS("./data/chicago airquality dataset/chicago.rds")
+
+str(chicago)
+names(chicago)
+
+
+#1. SELECT
+head(select(chicago,city:dptp))   #it will print city to dptp colomn
+
+head(select(chicago,-(city:dptp)))    #it will print all colomn except city to dptp
+
+
+#2. FILTER
+chic.f <- filter(chicago,pm25tmean2 > 30)   #it will give data frame with pm25tmean2 >30
+
+chic.f <- filter(chicago,pm25tmean2 > 30 & tmpd > 80)   ##it will give data frame with pm25tmean2 >30 and tempd  >80
+
+
+#3. ARRANGE
+arrange(chicago,date)   #it's kind of sort
+arrange(chicago,desc(date))
+
+
+#4. RENAME
+rename(chicago,pm25=pm25tmean2,dewpoint=dptp)   #new_name=old_name
+
+
+#5. MUTATE          #you want to create new variables that are derived from existing variables
+chicago <- mutate(chicago, pm25detrend = pm25 - mean(pm25, na.rm = TRUE))
+head(chicago)
+
+#6. TRANSMUTE       #it will only shows transformed variable
+head(transmute(chicago, pm10detrend = pm10tmean2 - mean(pm10tmean2, na.rm = TRUE),o3detrend = o3tmean2 - mean(o3tmean2, na.rm = TRUE)))
+
+#7. GROUP_BY
+chicago <- mutate(chicago,tempcat = factor(1*(tmpd > 80),labels = c("cold","hot")))
+hotcold <- group_by(chicago,tempcat)
+summarise(hotcold,pm25 = mean(pm25),o3 = max(o3tmean2),no = median (no2tmean2))
+
+chicago <- mutate(chicago, year = as.POSIXlt(date)$year + 1900)
+years <- group_by(chicago,year)
+summarize(years, pm25 = mean(pm25, na.rm = TRUE),o3 = max(o3tmean2, na.rm = TRUE), 
+                     no2 = median(no2tmean2, na.rm = TRUE))
+
+#8. %>%       it is used to use more than one function one command
+chicago %>% mutate(month =as.POSIXlt(data)$mon + 1) %>% group_by(month) %>% summarize(pm25 = mean(pm25,na.rm = TRUE),
+                                                                                      o3 = max(o3tmean2),no = median (no2tmean2))
