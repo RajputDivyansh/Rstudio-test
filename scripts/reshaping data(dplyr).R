@@ -125,3 +125,36 @@ summarize(years, pm25 = mean(pm25, na.rm = TRUE),o3 = max(o3tmean2, na.rm = TRUE
 #8. %>%       it is used to use more than one function one command
 chicago %>% mutate(month =as.POSIXlt(data)$mon + 1) %>% group_by(month) %>% summarize(pm25 = mean(pm25,na.rm = TRUE),
                                                                                       o3 = max(o3tmean2),no = median (no2tmean2))
+
+
+
+
+
+##MERGING DATA
+
+fileUrl1 <- "http://www.sharecsv.com/dl/e70e9c289adc4b87c900fdf69093f996/reviews.csv"
+fileUrl2 <- "http://www.sharecsv.com/dl/0863fd2414355555be0260f46dbe937b/solutions.csv"
+download.file(fileUrl1,destfile = "./data/review solution dataset/reviews.csv",method = "curl")
+download.file(fileUrl2,destfile = "./data/review solution dataset/solutions.csv",method = "curl")
+reviews <- read.csv("./data/review solution dataset/reviews.csv")
+solutions <- read.csv("./data/review solution dataset/solutions.csv")
+
+#by default it merge data frames on the basis of same colomns
+mergedData <- merge(reviews,solutions,all = TRUE)
+
+mergedData <- merge(reviews,solutions,by.x = "solution_id",by.y = "id",all = TRUE)
+
+
+#using join in the plyr package
+df1 <- data.frame(id = sample(1:10),x = rnorm(10))
+df2 <- data.frame(id = sample(1:10),y = rnorm(10))
+
+arrange(join(df1,df2),id)
+
+#if you have multiple packages
+df1 <- data.frame(id = sample(1:10),x = rnorm(10))
+df2 <- data.frame(id = sample(1:10),y = rnorm(10))
+df3 <- data.frame(id = sample(1:10),z = rnorm(10))
+dfList = list(df1,df2,df3)
+
+join_all(dfList)
