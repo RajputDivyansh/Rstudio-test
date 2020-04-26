@@ -158,3 +158,79 @@ df3 <- data.frame(id = sample(1:10),z = rnorm(10))
 dfList = list(df1,df2,df3)
 
 join_all(dfList)
+
+
+
+
+
+
+#################EXAMPLE#########################
+
+mydf <- read.csv("./data/R's cran download log/cran download log.csv",stringsAsFactors = FALSE)
+dim(mydf)
+library(dplyr)
+
+#converting data frame to tibble data frame
+cran <- tbl_df(mydf)
+
+#grouped the cran data on package
+#now any operation we apply to the grouped data 
+#will take place on a per package basis.
+by_package <- group_by(cran,package)
+
+#summarizing data on the basis of below functions
+pack_sum <- summarize(by_package,
+                      count = n(),
+                      unique = n_distinct(ip_id),
+                      countries = n_distinct(country),
+                      avg_bytes = mean(size))
+
+
+#We need to know the value of 'count' that splits the data into
+#the top 1% and bottom 99% of packages based on total downloads.
+#In statistics, this is called the 0.99, or 99%, sample
+#quantile. Use quantile(pack_sum$count, probs = 0.99) to
+#determine this number.
+
+quantile(pack_sum$count,prob = 0.99)
+
+
+#Now we can isolate only those packages which had more than 679
+#total downloads
+
+filter(pack_sum,pack_sum$count > 679)
+
+#aranging the data according to maximum count of download
+arrange(top_counts,desc(count))
+
+
+
+#Our final metric of popularity is the number of distinct
+#countries from which each package was downloaded. We'll
+#approach this one a little differently to introduce you to a
+#method called 'chaining' (or 'piping').
+
+top_countries <- filter(pack_sum, countries > 60)
+result1 <- arrange(top_countries, desc(countries), avg_bytes)
+
+# Print the results to the console.
+print(result1)
+
+
+#using chaining operator
+
+#The code to the right of %>% operates on the result from the
+#code to the left of %>%
+result3 <-
+  cran %>%
+  group_by(package) %>%
+  summarize(count = n(),
+            unique = n_distinct(ip_id),
+            countries = n_distinct(country),
+            avg_bytes = mean(size)
+  ) %>%
+  filter(countries > 60) %>%
+  arrange(desc(countries), avg_bytes)
+
+# Print result to console
+print(result3)
