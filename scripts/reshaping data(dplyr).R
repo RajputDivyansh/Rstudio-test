@@ -234,3 +234,34 @@ result3 <-
 
 # Print result to console
 print(result3)
+
+
+
+
+
+##TIDYING DATA WITH tidyr Package
+
+#gather    or    pivot_longer
+#this function use to increase the number of rows and decreasing the number of columns.
+students3 %>%
+  gather( class,grade , -(name:test) ,na.rm = TRUE) %>%
+  print
+
+
+#spread    or   pivot_wider
+#this function is use toincrease the number of columns and decreasing the number of rows.
+students3 %>%
+  gather(class, grade, class1:class5, na.rm = TRUE) %>%
+  spread( test, grade) %>%
+  utate(class = parse_number(class)) %>%
+  print()
+
+
+#Another example on tyding data
+sat %>%
+  select(-contains("total")) %>%
+  gather(part_sex, count, -score_range) %>%
+  separate(part_sex, c("part", "sex")) %>%
+  group_by(part,sex) %>%
+  mutate(total=sum(count),prop=count/total) %>% 
+  print()
